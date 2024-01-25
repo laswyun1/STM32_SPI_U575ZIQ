@@ -106,8 +106,8 @@ typedef struct _IOIF_SPIObj_t {
 /* USER CODE BEGIN PV */
 
 /* For DMA SPI Communication (with DMA) */
-static uint8_t spi1CommDmaRxBuff[DATA_TOTAL_BYTE] __attribute__((section(".spi1RxBuff"))) = {0};
-static uint8_t spi2CommDmaTxBuff[DATA_TOTAL_BYTE] __attribute__((section(".spi2TxBuff"))) = {0};
+static uint8_t spi1CommDmaTxBuff[DATA_TOTAL_BYTE] __attribute__((section(".spi1TxBuff"))) = {0};
+static uint8_t spi2CommDmaRxBuff[DATA_TOTAL_BYTE] __attribute__((section(".spi2RxBuff"))) = {0};
 
 uint8_t rxByteDataArray[DATA_TOTAL_BYTE] = {0};
 
@@ -410,9 +410,9 @@ uint8_t IOIF_TransmitSPIData(void)
 {
 	spiPtr = &spiTxObj;
 
-	memset(spi2CommDmaTxBuff, 0, DATA_TOTAL_BYTE);
-	memcpy(spi2CommDmaTxBuff, spiPtr->ParsedSPIByteData, DATA_TOTAL_BYTE);
-	uint8_t txDebug = HAL_SPI_Transmit_DMA(&hspi2, spi2CommDmaTxBuff, DATA_TOTAL_BYTE);
+	memset(spi1CommDmaTxBuff, 0, DATA_TOTAL_BYTE);
+	memcpy(spi1CommDmaTxBuff, spiPtr->ParsedSPIByteData, DATA_TOTAL_BYTE);
+	uint8_t txDebug = HAL_SPI_Transmit_DMA(&hspi1, spi1CommDmaTxBuff, DATA_TOTAL_BYTE);
 
 	spiTxObj = (IOIF_SPIObj_t){0};
 
@@ -423,8 +423,8 @@ uint8_t IOIF_TransmitSPIData(void)
 uint8_t IOIF_ReceiveSPIData(void)
 {
 	memset(rxByteDataArray, 0, DATA_TOTAL_BYTE);
-	uint8_t rxDebug = HAL_SPI_Receive_DMA(&hspi1, spi1CommDmaRxBuff, DATA_TOTAL_BYTE);
-	memcpy(rxByteDataArray, spi1CommDmaRxBuff, DATA_TOTAL_BYTE);
+	uint8_t rxDebug = HAL_SPI_Receive_DMA(&hspi2, spi2CommDmaRxBuff, DATA_TOTAL_BYTE);
+	memcpy(rxByteDataArray, spi2CommDmaRxBuff, DATA_TOTAL_BYTE);
 	settingSPIReceivedData(rxByteDataArray);
 
 	return rxDebug;
@@ -495,8 +495,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   memset(rxByteDataArray, 0, DATA_TOTAL_BYTE);
-  memset(spi1CommDmaRxBuff, 0, DATA_TOTAL_BYTE);
-  memset(spi2CommDmaTxBuff, 0, DATA_TOTAL_BYTE);
+  memset(spi1CommDmaTxBuff, 0, DATA_TOTAL_BYTE);
+  memset(spi2CommDmaRxBuff, 0, DATA_TOTAL_BYTE);
 
   HAL_TIM_Base_Start_IT(&htim1);
   HAL_TIM_Base_Start_IT(&htim2);
