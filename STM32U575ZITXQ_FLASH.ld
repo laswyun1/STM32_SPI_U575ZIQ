@@ -149,8 +149,7 @@ SECTIONS
   .spi_test_buffer (NOLOAD) :
   {
   	. = ABSOLUTE(0x28000000);
-  	*(.spi1RxBuff)
-  	*(.spi2TxBuff)
+  	*(.spi2RxBuff)
   } >SRAM4
   
   
